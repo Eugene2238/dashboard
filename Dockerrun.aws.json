@@ -23,9 +23,9 @@
       "memory": 128
     },
     {
-      "name": "nginx",
-      "image": "eugene2238/nginx",
-      "hostname": "nginx",
+      "name": "dashboard-nginx",
+      "image": "eugene2238/dashboard-nginx",
+      "hostname": "dashboard-nginx",
       "essential": true,
       "portMappings": [
         {
