@@ -1,0 +1,40 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "dashboard-backend",
+      "image": "eugene2238/dashboard-backend",
+      "hostname": "dashboard-backend",
+      "essential": false,
+      "memory": 128
+    },
+    {
+      "name": "dashboard-frontend",
+      "image": "eugene2238/dashboard-frontend",
+      "hostname": "dashboard-frontend",
+      "essential": false,
+      "memory": 128
+    },
+    {
+      "name": "dashboard-update-widgets",
+      "image": "eugene2238/dashboard-update-widgets",
+      "hostname": "dashboard-update-widgets",
+      "essential": false,
+      "memory": 128
+    },
+    {
+      "name": "nginx",
+      "image": "eugene2238/nginx",
+      "hostname": "nginx",
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": ["dashboard-backend", "dashboard-frontend"],
+      "memory": 128
+    }
+  ]
+}

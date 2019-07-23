@@ -1,0 +1,56 @@
+version: '3.7'
+
+services:
+  nginx:
+    build:
+      context: ./apps/dashboard-nginx
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - dashboard-backend
+      - dashboard-frontend
+    restart: unless-stopped
+
+  dashboard-backend:
+    build:
+      context: ./apps/dashboard-backend
+      dockerfile: ./docker/node/Dockerfile
+    ports:
+      - 3000
+    command: pm2-runtime start bin/www --name dashboard-backend
+    depends_on:
+      - mongo
+    env_file:
+      - './apps/dashboard-backend/docker/node/.env.prod'
+    restart: unless-stopped
+
+  mongo:
+    image: 'mongo:4.0-xenial'
+    volumes:
+      - mongo:/data/db
+    ports:
+      - 27017
+    restart: unless-stopped
+
+  dashboard-frontend:
+    build:
+      context: ./apps/dashboard-frontend
+      dockerfile: ./docker/node/Dockerfile
+    ports:
+      - 5000
+
+  dashboard-update-widgets:
+    build:
+      context: ./apps/dashboard-update-widgets
+      dockerfile: ./docker/node/Dockerfile
+    command: pm2-runtime start index.js --name dashboard-update-widgets
+    depends_on:
+      - mongo
+    env_file:
+      - './apps/dashboard-update-widgets/docker/node/.env.prod'
+    restart: unless-stopped
+
+volumes:
+  mongo:

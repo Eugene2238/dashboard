@@ -1,0 +1,23 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+after_success:
+  - docker build -t eugene2238/dashboard-nginx -f ./apps/dashboard-nginx/docker/nginx/Dockerfile ./apps/dashboard-nginx
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push eugene2238/dashboard-nginx
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: dashboard
+  env: Dashboard-env
+  bucket_name: elasticbeanstalk-us-east-1-965623510787
+  bucket_path: dashboard
+  on:
+    branch: master
+  access_key_id:
+   secure: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY

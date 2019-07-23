@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  angular-unittests:
+    build:
+      context: ./apps/dashboard-frontend
+      dockerfile: ./docker/chromium/Dockerfile
+    volumes:
+      - /app/node_modules
+      - ./apps/dashboard-frontend:/app
+    command: npm run testChromiumNoSandbox

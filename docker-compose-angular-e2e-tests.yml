@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+  dashboard-backend:
+    build:
+      context: ./apps/dashboard-backend
+      dockerfile: ./docker/node/Dockerfile
+    ports:
+      - 3000
+    command: pm2-runtime start bin/www --name dashboard-backend
+    depends_on:
+      - mongo
+    env_file:
+      - './apps/dashboard-backend/docker/node/.env.prod'
+    restart: unless-stopped
+
+  mongo:
+    image: 'mongo:4.0-xenial'
+    volumes:
+      - mongo:/data/db
+    ports:
+      - 27017
+    restart: unless-stopped
+
+  angular-e2e-tests:
+    build:
+      context: ./apps/dashboard-frontend
+      dockerfile: ./docker/angular-e2e/Dockerfile
+    volumes:
+      - /app/node_modules
+      - ./apps/dashboard-frontend:/app
+    ports:
+      - 4200
+    command: npm run e2e
+
+volumes:
+  mongo:
